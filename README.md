@@ -33,36 +33,38 @@ It has relatively few tunable parameters, and it automatically balances diversif
 ### Usage
 
 For example, here is the [Rosenbrock banana function](http://en.wikipedia.org/wiki/Rosenbrock_function) and a custom smooth updater. The function has a global minimum at `(a, a^2)`, but it's hard to find.
-    # Parameters for the "banana" objective function.
-    a = 1.0
-    b = 100.0
+```{ruby}
+# Parameters for the "banana" objective function.
+a = 1.0
+b = 100.0
 
-    # Our initial guess at the optimal solution.
-    # This is just a guess, so we give it a large standard deviation.
-    mean = NArray[0.0, 0.0]
-    stddev = NArray[10.0, 10.0]
+# Our initial guess at the optimal solution.
+# This is just a guess, so we give it a large standard deviation.
+mean = NArray[0.0, 0.0]
+stddev = NArray[10.0, 10.0]
 
-    # Set up the problem. These are the CEM parameters.
-    problem = CrossEntropy::ContinuousProblem.new(mean, stddev)
-    problem.num_samples = 1000
-    problem.num_elite   = 10
-    problem.max_iters   = 300
-    smooth = 0.1
+# Set up the problem. These are the CEM parameters.
+problem = CrossEntropy::ContinuousProblem.new(mean, stddev)
+problem.num_samples = 1000
+problem.num_elite   = 10
+problem.max_iters   = 300
+smooth = 0.1
 
-    # Objective function.
-    problem.to_score_sample {|x| (a - x[0])**2 + b*(x[1] - x[0]**2)**2 }
+# Objective function.
+problem.to_score_sample {|x| (a - x[0])**2 + b*(x[1] - x[0]**2)**2 }
 
-    # Do some smoothing when updating the parameters based on new samples.
-    # This isn't strictly required, but I find it often helps convergence.
-    problem.to_update {|new_mean, new_stddev|
-      smooth_mean = smooth*new_mean + (1 - smooth)*problem.param_mean
-      smooth_stddev = smooth*new_stddev + (1 - smooth)*problem.param_stddev
-      [smooth_mean, smooth_stddev]
-    }
+# Do some smoothing when updating the parameters based on new samples.
+# This isn't strictly required, but I find it often helps convergence.
+problem.to_update {|new_mean, new_stddev|
+  smooth_mean = smooth*new_mean + (1 - smooth)*problem.param_mean
+  smooth_stddev = smooth*new_stddev + (1 - smooth)*problem.param_stddev
+  [smooth_mean, smooth_stddev]
+}
 
-    # It's all calculation from now on...
-    problem.solve
-    # problems.param_mean => NArray[1.0, 1.0]
+# It's all calculation from now on...
+problem.solve
+# problems.param_mean => NArray[1.0, 1.0]
+```
 
 ## INSTALLATION
 
