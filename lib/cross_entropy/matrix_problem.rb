@@ -22,7 +22,7 @@ module CrossEntropy
     def num_values;    @params.shape[0] end
 
     #
-    # Generate samples directly from the probabilities matrix {#pr}.
+    # Generate samples directly from the probabilities matrix {#params}.
     #
     # If your problem is tightly constrained, you may want to provide a custom
     # sample generation routine that avoids infeasible solutions; see
@@ -61,7 +61,8 @@ module CrossEntropy
     # Find most likely solution so far based on given probabilities.
     #
     # @param [NArray] pr probability matrix with {#num_variables} rows and
-    # {#num_values} columns; if not specified, the current {#pr} matrix is used
+    # {#num_values} columns; if not specified, the current {#params} matrix is
+    # used
     #
     # @return [Narray] column vector with {#num_variables} integer entries in
     # [0, {#num_values})
