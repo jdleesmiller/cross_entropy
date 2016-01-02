@@ -12,7 +12,7 @@ class TestCrossEntropy < MiniTest::Test
 
   def test_ce_estimate_ml
     mp = CrossEntropy::MatrixProblem.new
-    mp.pr            = NArray.float(2, 4).fill!(0.5)
+    mp.params        = NArray.float(2, 4).fill!(0.5)
     mp.num_samples   = 50
     mp.num_elite     = 3
 
@@ -43,21 +43,21 @@ class TestCrossEntropy < MiniTest::Test
 
   def test_ce_most_likely_solution
     mp = CrossEntropy::MatrixProblem.new
-    mp.pr            = NArray.float(4, 3).fill!(0.25)
+    mp.params        = NArray.float(4, 3).fill!(0.25)
     mp.num_samples   = 50
     mp.num_elite     = 3
 
     # When there is a tie, the lowest value is taken.
     assert_equal NArray[0,0,0], mp.most_likely_solution
 
-    mp.pr = NArray[[0.0,0.0,0.0,1.0],
-                   [1.0,0.0,0.0,0.0],
-                   [0.2,0.2,0.2,0.4]]
+    mp.params = NArray[[0.0,0.0,0.0,1.0],
+                       [1.0,0.0,0.0,0.0],
+                       [0.2,0.2,0.2,0.4]]
     assert_equal NArray[3,0,3], mp.most_likely_solution
 
-    mp.pr = NArray[[0.0,0.0,1.0,0.0],
-                   [0.0,1.0,0.0,0.0],
-                   [0.1,0.3,0.4,0.2]]
+    mp.params = NArray[[0.0,0.0,1.0,0.0],
+                       [0.0,1.0,0.0,0.0],
+                       [0.1,0.3,0.4,0.2]]
     assert_equal NArray[2,1,2], mp.most_likely_solution
   end
 
@@ -73,7 +73,7 @@ class TestCrossEntropy < MiniTest::Test
     y_true = NArray[1,1,1,1,1,0,0,0,0,0]
 
     mp = CrossEntropy::MatrixProblem.new
-    mp.pr            = NArray.float(2, n).fill!(0.5)
+    mp.params        = NArray.float(2, n).fill!(0.5)
     mp.num_samples   = 50
     mp.num_elite     = 5
     mp.max_iters     = 10
@@ -107,12 +107,12 @@ class TestCrossEntropy < MiniTest::Test
                [6,5,2,2,0]]
 
     mp = CrossEntropy::MatrixProblem.new
-    mp.pr            = NArray.float(2, n).fill!(0.5)
-    mp.pr[true,0]    = NArray[0.0,1.0] # put vertex 0 in subset 1
-    mp.num_samples   = 50
-    mp.num_elite     = 5
-    mp.max_iters     = 10
-    smooth           = 0.4
+    mp.params         = NArray.float(2, n).fill!(0.5)
+    mp.params[true,0] = NArray[0.0,1.0] # put vertex 0 in subset 1
+    mp.num_samples    = 50
+    mp.num_elite      = 5
+    mp.max_iters      = 10
+    smooth            = 0.4
 
     max_cut_score = proc do |sample|
       weight = 0
@@ -130,11 +130,11 @@ class TestCrossEntropy < MiniTest::Test
     mp.to_score_sample(&max_cut_score)
 
     mp.to_update do |pr_iter|
-      smooth*pr_iter + (1 - smooth)*mp.pr
+      smooth*pr_iter + (1 - smooth)*mp.params
     end
 
     mp.for_stop_decision do
-      #p mp.pr
+      #p mp.params
       mp.num_iters >= mp.max_iters
     end
 
