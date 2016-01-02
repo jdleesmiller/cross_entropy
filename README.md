@@ -1,5 +1,7 @@
 # cross_entropy
 
+[![Build Status](https://travis-ci.org/jdleesmiller/cross_entropy.svg?branch=master)](https://travis-ci.org/jdleesmiller/cross_entropy)
+
 https://github.com/jdleesmiller/cross_entropy 
 
 ## SYNOPSIS
