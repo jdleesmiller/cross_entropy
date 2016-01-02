@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.email             = ['jdleesmiller@gmail.com']
   s.homepage          = 'https://github.com/jdleesmiller/cross_entropy'
   s.summary           = %q{Solve optimisation problems with the Cross Entropy Method.}
-  s.description       = %q{Tools for continuous optimisation over a vector or matrix of variables.}
+  s.description       = %q{Includes solvers for continuous and discrete multivariate optimisation problems.}
 
   s.add_runtime_dependency 'narray', '~> 0.6'
   s.add_development_dependency 'gemma', '~> 4.1'
