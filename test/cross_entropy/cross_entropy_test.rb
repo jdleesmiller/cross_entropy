@@ -1,16 +1,7 @@
 # frozen_string_literal: true
-require 'cross_entropy'
-require 'minitest/autorun'
+require_relative 'test_helper'
 
-class TestCrossEntropy < MiniTest::Test
-  # tolerance for numerical comparisons
-  DELTA = 1e-6
-
-  def assert_narray_close(exp, obs)
-    assert exp.shape == obs.shape && ((exp - obs).abs < DELTA).all?,
-           "#{exp.inspect} expected; got\n#{obs.inspect}"
-  end
-
+class TestCrossEntropy < CrossEntropyTest
   def test_ce_estimate_ml
     mp = CrossEntropy::MatrixProblem.new
     mp.params        = NArray.float(2, 4).fill!(0.5)

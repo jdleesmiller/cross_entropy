@@ -1,17 +1,8 @@
 # frozen_string_literal: true
-require 'cross_entropy'
-require 'minitest/autorun'
+require_relative 'test_helper'
 
-class TestContinuousProblem < MiniTest::Test
-  # tolerance for numerical comparisons
-  DELTA = 1e-6
-
+class TestContinuousProblem < CrossEntropyTest
   include NMath
-
-  def assert_narray_close(exp, obs)
-    assert exp.shape == obs.shape && ((exp - obs).abs < DELTA).all?,
-           "#{exp.inspect} expected; got\n#{obs.inspect}"
-  end
 
   #
   # Example 3.1 from Kroese et al. 2006.

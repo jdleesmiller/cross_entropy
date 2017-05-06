@@ -1,14 +1,13 @@
 # frozen_string_literal: true
-require 'cross_entropy'
-require 'minitest/autorun'
+require_relative 'test_helper'
 
-class TestBetaProblem < MiniTest::Test
-  # tolerance for numerical comparisons
-  DELTA = 1e-3
-
-  def assert_narray_close(exp, obs)
-    assert exp.shape == obs.shape && ((exp - obs).abs < DELTA).all?,
-           "#{exp.inspect} expected; got\n#{obs.inspect}"
+class TestBetaProblem < CrossEntropyTest
+  #
+  # Numerical tolerance for comparison. We would have to run for a long time to
+  # get within the default tolerance of 10^-6, so use a less strict tolerance.
+  #
+  def delta
+    1e-3
   end
 
   #

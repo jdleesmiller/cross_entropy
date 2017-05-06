@@ -1,14 +1,8 @@
 # frozen_string_literal: true
-require 'cross_entropy'
-require 'minitest/autorun'
+require_relative 'test_helper'
 
-class TestNArrayExtensions < MiniTest::Test
+class TestNArrayExtensions < CrossEntropyTest
   using CrossEntropy::NArrayExtensions
-
-  #
-  # Tolerance for floating point comparison.
-  #
-  DELTA = 1e-6
 
   def test_array_cumsum
     assert_equal NArray[], NArray[].cumsum
@@ -18,11 +12,6 @@ class TestNArrayExtensions < MiniTest::Test
     assert_equal NArray[1, 1], NArray[1, 0].cumsum
     assert_equal NArray[1, 2], NArray[1, 1].cumsum
     assert_equal NArray[1, 3, 6], NArray[1, 2, 3].cumsum
-  end
-
-  def assert_narray_close(exp, obs)
-    assert exp.shape == obs.shape && ((exp - obs).abs < DELTA).all?,
-           "#{exp.inspect} expected; got\n#{obs.inspect}"
   end
 
   def test_narray_sample_pmf
