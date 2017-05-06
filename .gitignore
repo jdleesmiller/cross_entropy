@@ -7,3 +7,5 @@ pkg/*
 /yard
 /.yardoc
 /Gemfile.lock
+
+.ruby-version
