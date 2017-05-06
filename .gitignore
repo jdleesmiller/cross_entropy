@@ -2,7 +2,7 @@
 pkg/*
 *.gem
 .bundle
-/rcov
+/coverage
 /rdoc
 /yard
 /.yardoc
