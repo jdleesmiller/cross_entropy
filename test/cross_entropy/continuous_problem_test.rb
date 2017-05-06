@@ -22,7 +22,7 @@ class TestContinuousProblem < MiniTest::Test
   #
   # (This is also the example on Wikipedia.)
   #
-  def test_Kroese_3_1
+  def test_kroese_3_1
     NArray.srand(567) # must use NArray's generator, not Ruby's
 
     mean = NArray[0.0]

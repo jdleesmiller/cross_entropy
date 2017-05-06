@@ -67,7 +67,7 @@ class TestCrossEntropy < MiniTest::Test
   # The aim is to search for the given Boolean vector y_true.
   # The MatrixProblem's default estimation rule is equivalent to equation (8).
   #
-  def test_ce_deBoer_1
+  def test_ce_deboer_1
     NArray.srand(567) # must use NArray's generator, not Ruby's
 
     n = 10
@@ -96,7 +96,7 @@ class TestCrossEntropy < MiniTest::Test
   # This is a max-cut problem.
   # We also do some smoothing.
   #
-  def test_ce_deBoer_2
+  def test_ce_deboer_2
     NArray.srand(567) # must use NArray's generator, not Ruby's
 
     # Cost matrix
