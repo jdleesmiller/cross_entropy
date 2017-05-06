@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'narray', '~> 0.6'
   s.add_development_dependency 'gemma', '~> 5.0'
   s.add_development_dependency 'rubocop', '~> 0.48.0'
+  s.add_development_dependency 'simplecov', '~> 0.14.1'
 
   s.files       = Dir.glob('{lib,bin}/**/*.rb') + %w[README.md]
   s.test_files  = Dir.glob('test/cross_entropy/*_test.rb')
