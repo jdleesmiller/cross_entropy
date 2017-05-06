@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'cross_entropy/version'
 
 require 'narray'

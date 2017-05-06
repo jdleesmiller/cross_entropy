@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module CrossEntropy
   #
   # Solve a continuous optimisation problem. The sampling distribution of each

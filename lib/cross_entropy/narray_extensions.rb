@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module CrossEntropy
   #
   # Some extensions to NArray.
@@ -23,15 +24,15 @@ module CrossEntropy
             # use the built-in version for dimension 1
             cumsum_1!
           else
-            # for example, if this is a matrix and dim = 0, mask_0 selects the
-            # first column of the matrix and mask_1 selects the second column;
+            # for example, if this is a matrix and dim = 0, mask0 selects the
+            # first column of the matrix and mask1 selects the second column;
             # then we just shuffle them along and accumulate.
-            mask_0 = (0...self.dim).map { |d| d == dim ? 0 : true }
-            mask_1 = (0...self.dim).map { |d| d == dim ? 1 : true }
-            while mask_1[dim] < shape[dim]
-              self[*mask_1] += self[*mask_0]
-              mask_0[dim] += 1
-              mask_1[dim] += 1
+            mask0 = (0...self.dim).map { |d| d == dim ? 0 : true }
+            mask1 = (0...self.dim).map { |d| d == dim ? 1 : true }
+            while mask1[dim] < shape[dim]
+              self[*mask1] += self[*mask0]
+              mask0[dim] += 1
+              mask1[dim] += 1
             end
           end
         end

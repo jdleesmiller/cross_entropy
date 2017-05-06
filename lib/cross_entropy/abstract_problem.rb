@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module CrossEntropy
   #
   # Base class for specific problem types.

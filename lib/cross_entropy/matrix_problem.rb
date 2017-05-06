@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module CrossEntropy
   #
   # Assuming that the data are probabilities in an NArray (say dim 1 or dim 2
