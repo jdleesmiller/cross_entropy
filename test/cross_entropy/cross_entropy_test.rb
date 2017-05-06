@@ -69,6 +69,7 @@ class TestCrossEntropy < CrossEntropyTest
     mp.num_samples   = 50
     mp.num_elite     = 5
     mp.max_iters     = 10
+    mp.track_overall_min = true
 
     mp.to_score_sample do |sample|
       y_true.eq(sample).count_false # to be minimized
@@ -79,6 +80,11 @@ class TestCrossEntropy < CrossEntropyTest
     if y_true != mp.most_likely_solution
       warn "expected #{y_true}; found #{mp.most_likely_solution}"
     end
+
+    if y_true != mp.overall_min_score_sample
+      warn "expected overall #{y_true}; found #{mp.overall_min_score_sample}"
+    end
+
     assert mp.num_iters <= mp.max_iters
   end
 
