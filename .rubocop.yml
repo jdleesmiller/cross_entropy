@@ -3,7 +3,7 @@ inherit_from: .rubocop_todo.yml
 AllCops:
   TargetRubyVersion: 2.4
 
-# This does not play nicely with with NArray.
+# This does not play nice with NArray.
 Style/NumericPredicate:
   Enabled: false
 
