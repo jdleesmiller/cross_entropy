@@ -1,9 +1,11 @@
+# frozen_string_literal: true
 module CrossEntropy
   #
   # Some extensions to NArray.
   #
   # Note that I've opened a pull request for general cumsum and tile, but it's
-  # still open without comment after three years, so maybe they don't like them.
+  # still open without comment after three years, and I think they have stopped
+  # working on this version of narray.
   # https://github.com/masa16/narray/pull/7
   #
   module NArrayExtensions
@@ -15,18 +17,18 @@ module CrossEntropy
       #
       # @return [NArray] self
       #
-      def cumsum_general! dim=0
+      def cumsum_general!(dim = 0)
         if self.dim > dim
           if self.dim == 1
             # use the built-in version for dimension 1
-            self.cumsum_1!
+            cumsum_1!
           else
             # for example, if this is a matrix and dim = 0, mask_0 selects the
             # first column of the matrix and mask_1 selects the second column;
             # then we just shuffle them along and accumulate.
-            mask_0 = (0...self.dim).map{|d| d == dim ? 0 : true}
-            mask_1 = (0...self.dim).map{|d| d == dim ? 1 : true}
-            while mask_1[dim] < self.shape[dim]
+            mask_0 = (0...self.dim).map { |d| d == dim ? 0 : true }
+            mask_1 = (0...self.dim).map { |d| d == dim ? 1 : true }
+            while mask_1[dim] < shape[dim]
               self[*mask_1] += self[*mask_0]
               mask_0[dim] += 1
               mask_1[dim] += 1
@@ -43,15 +45,15 @@ module CrossEntropy
       #
       # @return [NArray]
       #
-      def cumsum_general dim=0
-        self.dup.cumsum_general!(dim)
+      def cumsum_general(dim = 0)
+        dup.cumsum_general!(dim)
       end
 
       # The built-in cumsum only does vectors (dim 1).
-      alias cumsum_1 cumsum
-      alias cumsum cumsum_general
-      alias cumsum_1! cumsum!
-      alias cumsum! cumsum_general!
+      alias_method :cumsum_1, :cumsum
+      alias_method :cumsum, :cumsum_general
+      alias_method :cumsum_1!, :cumsum!
+      alias_method :cumsum!, :cumsum_general!
 
       #
       # Replicate this array to make a tiled array; this is the matlab function
@@ -63,31 +65,34 @@ module CrossEntropy
       #
       # @return [NArray] with same typecode as self
       #
-      def tile *reps
-        if self.dim == 0 || reps.member?(0)
+      def tile(*reps)
+        if dim == 0 || reps.member?(0)
           # Degenerate case: 0 dimensions or dimension 0
-          res = NArray.new(self.typecode, 0)
+          res = NArray.new(typecode, 0)
         else
-          if reps.size <= self.dim
+          if reps.size <= dim
             # Repeat any extra dims once.
-            reps = reps + [1]*(self.dim - reps.size)
+            reps += [1] * (dim - reps.size)
             tile = self
           else
             # Have to add some more dimensions (with implicit shape[dim] = 1).
-            tile_shape = self.shape + [1]*(reps.size - self.dim)
-            tile = self.reshape(*tile_shape)
+            tile_shape = shape + [1] * (reps.size - dim)
+            tile = reshape(*tile_shape)
           end
 
           # Allocate tiled matrix.
-          res_shape = (0...tile.dim).map{|i| tile.shape[i] * reps[i]}
-          res = NArray.new(self.typecode, *res_shape)
+          res_shape = (0...tile.dim).map { |i| tile.shape[i] * reps[i] }
+          res = NArray.new(typecode, *res_shape)
 
           # Copy tiles.
           # This probably isn't the most efficient way of doing this; just doing
           # res[] = tile doesn't seem to work in general
           nested_for_zero_to(reps) do |tile_pos|
-            tile_slice = (0...tile.dim).map{|i|
-              (tile.shape[i] * tile_pos[i])...(tile.shape[i] * (tile_pos[i]+1))}
+            tile_slice = (0...tile.dim).map do |i|
+              start_index = tile.shape[i] * tile_pos[i]
+              end_index = tile.shape[i] * (tile_pos[i] + 1)
+              start_index...end_index
+            end
             res[*tile_slice] = tile
           end
         end
@@ -106,11 +111,17 @@ module CrossEntropy
       # @return [Array<Integer>] subscript corresponding to the given linear
       #         index; this is the same size as +shape+
       #
-      def index_to_subscript index
-        raise IndexError.new("out of bounds: index=#{index} for shape=#{
-          self.shape.inspect}") if index >= self.size
+      def index_to_subscript(index)
+        if index >= size
+          raise \
+            IndexError,
+            "out of bounds: index=#{index} for shape=#{shape.inspect}"
+        end
 
-        self.shape.map {|s| index, r = index.divmod(s); r }
+        shape.map do |s|
+          index, r = index.divmod(s)
+          r
+        end
       end
 
       #
@@ -130,8 +141,8 @@ module CrossEntropy
       # @return [Array<Integer>] subscripts of a randomly selected into the
       #         array; this is the same size as +shape+
       #
-      def sample_pmf r=nil
-        self.index_to_subscript(self.flatten.sample_pmf_dim(0, r))
+      def sample_pmf(r = nil)
+        index_to_subscript(flatten.sample_pmf_dim(0, r))
       end
 
       #
@@ -155,8 +166,8 @@ module CrossEntropy
       #
       # @return [NArray] integer subscripts
       #
-      def sample_pmf_dim dim=0, r=nil
-        self.cumsum(dim).sample_cdf_dim(dim, r)
+      def sample_pmf_dim(dim = 0, r = nil)
+        cumsum(dim).sample_cdf_dim(dim, r)
       end
 
       #
@@ -173,12 +184,12 @@ module CrossEntropy
       #
       # @return [NArray] integer subscripts
       #
-      def sample_cdf_dim dim=0, r=nil
+      def sample_cdf_dim(dim = 0, r = nil)
         raise 'self.dim must be > dim' unless self.dim > dim
 
         # generate random sample, unless one was given for testing
-        r_shape = (0...self.dim).map {|i| i == dim ? 1 : self.shape[i]}
-        r = NArray.new(self.typecode, *r_shape).random! unless r
+        r_shape = (0...self.dim).map { |i| i == dim ? 1 : shape[i] }
+        r = NArray.new(typecode, *r_shape).random! unless r
 
         # allocate space for results -- same size as the random sample
         res = NArray.int(*r_shape)
@@ -187,9 +198,9 @@ module CrossEntropy
         # threshold
         nested_for_zero_to(r_shape) do |slice|
           r_thresh    = r[*slice]
-          res[*slice] = self.shape[dim] - 1 # default to last
+          res[*slice] = shape[dim] - 1 # default to last
           self_slice = slice.dup
-          for self_slice[dim] in 0...self.shape[dim]
+          for self_slice[dim] in 0...shape[dim]
             if r_thresh < self[*self_slice]
               res[*slice] = self_slice[dim]
               break
@@ -197,7 +208,7 @@ module CrossEntropy
           end
         end
 
-        res[*(0...self.dim).map {|i| i == dim ? 0 : true}]
+        res[*(0...self.dim).map { |i| i == dim ? 0 : true }]
       end
 
       private
@@ -216,9 +227,9 @@ module CrossEntropy
       #
       # @return [nil]
       #
-      def nested_for_zero_to suprema
+      def nested_for_zero_to(suprema)
         unless suprema.empty?
-          nums = suprema.map{|n| (0...n).to_a}
+          nums = suprema.map { |n| (0...n).to_a }
           nums.first.product(*nums.drop(1)).each do |num|
             yield num
           end

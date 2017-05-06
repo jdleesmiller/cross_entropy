@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module CrossEntropy
   #
   # Base class for specific problem types.
@@ -6,7 +7,7 @@ module CrossEntropy
     #
     # @param [Array] params
     #
-    def initialize params
+    def initialize(params)
       @params = params
 
       @max_iters = nil
@@ -14,14 +15,14 @@ module CrossEntropy
       @overall_min_score = 1.0 / 0.0
       @overall_min_score_sample = nil
 
-      @generate_samples = proc { raise "no generating function provided" }
-      @score_sample     = proc {|sample| raise "no score function provided" }
-      @estimate         = proc {|elite| raise "no estimate function provided" }
-      @update           = proc {|estimated_params| estimated_params }
-      @stop_decision    = proc {
-        raise "no max_iters provided" unless self.max_iters
-        self.num_iters >= self.max_iters
-      }
+      @generate_samples = proc { raise 'no generating function provided' }
+      @score_sample     = proc { |_sample| raise 'no score block provided' }
+      @estimate         = proc { |_elite| raise 'no estimate block provided' }
+      @update           = proc { |estimated_params| estimated_params }
+      @stop_decision    = proc do
+        raise 'no max_iters provided' unless max_iters
+        num_iters >= max_iters
+      end
 
       yield(self) if block_given?
     end
@@ -32,15 +33,25 @@ module CrossEntropy
     attr_accessor :num_elite
     attr_accessor :max_iters
 
-    def to_generate_samples &block; @generate_samples = block end
+    def to_generate_samples(&block)
+      @generate_samples = block
+    end
 
-    def to_score_sample &block; @score_sample = block end
+    def to_score_sample(&block)
+      @score_sample = block
+    end
 
-    def to_estimate &block; @estimate = block end
+    def to_estimate(&block)
+      @estimate = block
+    end
 
-    def to_update &block; @update = block end
+    def to_update(&block)
+      @update = block
+    end
 
-    def for_stop_decision &block; @stop_decision = block end
+    def for_stop_decision(&block)
+      @stop_decision = block
+    end
 
     attr_reader :num_iters
     attr_reader :min_score
@@ -65,9 +76,9 @@ module CrossEntropy
         samples = @generate_samples.call
 
         # Score each sample.
-        scores = NArray.float(self.num_samples)
-        for i in 0...self.num_samples
-          sample_i = samples[i,true]
+        scores = NArray.float(num_samples)
+        for i in 0...num_samples
+          sample_i = samples[i, true]
           score_i  = @score_sample.call(sample_i)
 
           # Keep track of best ever if requested.
@@ -82,7 +93,7 @@ module CrossEntropy
         # Find elite quantile (gamma).
         scores_sorted = scores.sort
         @min_score   = scores_sorted[0]
-        @elite_score = scores_sorted[self.num_elite-1]
+        @elite_score = scores_sorted[num_elite - 1]
 
         # Take all samples with scores below (or equal to) gamma; note that
         # there may be more than num_elite, due to ties.
@@ -99,4 +110,3 @@ module CrossEntropy
     end
   end
 end
-

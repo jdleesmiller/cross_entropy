@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module CrossEntropy
   #
   # Solve a continuous optimisation problem in which the variables are bounded
@@ -8,25 +9,30 @@ module CrossEntropy
   class BetaProblem < AbstractProblem
     include NMath
 
-    def initialize alpha, beta
+    def initialize(alpha, beta)
       super [alpha, beta]
 
-      @generate_samples = proc { self.generate_beta_samples }
-      @estimate         = proc {|elite| self.estimate_mom(elite) }
+      @generate_samples = proc { generate_beta_samples }
+      @estimate         = proc { |elite| estimate_mom(elite) }
 
       yield(self) if block_given?
     end
 
-    def param_alpha; params[0] end
-    def param_beta; params[1] end
+    def param_alpha
+      params[0]
+    end
+
+    def param_beta
+      params[1]
+    end
 
     #
     # Generate samples.
     #
     def generate_beta_samples
-      NArray[*param_alpha.to_a.zip(param_beta.to_a).map {|alpha, beta|
+      NArray[*param_alpha.to_a.zip(param_beta.to_a).map do |alpha, beta|
         generate_beta_sample(alpha, beta)
-      }]
+      end]
     end
 
     #
@@ -42,7 +48,7 @@ module CrossEntropy
     #
     # @return [Array] the estimated parameter arrays
     #
-    def estimate_mom elite
+    def estimate_mom(elite)
       mean = elite.mean(0)
       variance = elite.stddev(0)**2
 
@@ -61,15 +67,14 @@ module CrossEntropy
 
     private
 
-    def generate_erlang_samples k
+    def generate_erlang_samples(k)
       -log(NArray.float(k, num_samples).random).sum(0)
     end
 
-    def generate_beta_sample alpha, beta
+    def generate_beta_sample(alpha, beta)
       a = generate_erlang_samples(alpha)
       b = generate_erlang_samples(beta)
       a / (a + b)
     end
   end
 end
-

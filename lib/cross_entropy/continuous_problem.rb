@@ -1,22 +1,30 @@
+# frozen_string_literal: true
 module CrossEntropy
   #
   # Solve a continuous optimisation problem. The sampling distribution of each
   # parameter is assumed to be a 1D Gaussian with given mean and variance.
   #
   class ContinuousProblem < AbstractProblem
-    def initialize mean, stddev
+    def initialize(mean, stddev)
       super [mean, stddev]
 
-      @generate_samples = proc { self.generate_gaussian_samples }
-      @estimate         = proc {|elite| self.estimate_ml(elite) }
+      @generate_samples = proc { generate_gaussian_samples }
+      @estimate         = proc { |elite| estimate_ml(elite) }
 
       yield(self) if block_given?
     end
 
-    def param_mean; params[0] end
-    def param_stddev; params[1] end
+    def param_mean
+      params[0]
+    end
 
-    def sample_shape; param_mean.shape end
+    def param_stddev
+      params[1]
+    end
+
+    def sample_shape
+      param_mean.shape
+    end
 
     #
     # Generate samples.
@@ -36,9 +44,8 @@ module CrossEntropy
     #
     # @return [Array] the estimated parameter arrays
     #
-    def estimate_ml elite
+    def estimate_ml(elite)
       [elite.mean(0), elite.stddev(0)]
     end
   end
 end
-

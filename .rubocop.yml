@@ -1,0 +1,18 @@
+AllCops:
+  TargetRubyVersion: 2.4
+
+# This does not play nicely with with NArray.
+Style/NumericPredicate:
+  Enabled: false
+
+Style/Documentation:
+  Exclude:
+    - 'test/**/*'
+
+Metrics/ClassLength:
+  Exclude:
+    - 'test/**/*'
+
+Metrics/AbcSize:
+  Exclude:
+    - 'test/**/*'

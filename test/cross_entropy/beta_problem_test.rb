@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'cross_entropy'
 require 'minitest/autorun'
 
@@ -5,9 +6,9 @@ class TestBetaProblem < MiniTest::Test
   # tolerance for numerical comparisons
   DELTA = 1e-3
 
-  def assert_narray_close exp, obs
+  def assert_narray_close(exp, obs)
     assert exp.shape == obs.shape && ((exp - obs).abs < DELTA).all?,
-      "#{exp.inspect} expected; got\n#{obs.inspect}"
+           "#{exp.inspect} expected; got\n#{obs.inspect}"
   end
 
   #
@@ -30,13 +31,13 @@ class TestBetaProblem < MiniTest::Test
     problem.num_elite   = 10
     problem.max_iters   = 10
 
-    problem.to_score_sample {|x| (a - x[0])**2 + b*(x[1] - x[0]**2)**2 }
+    problem.to_score_sample { |x| (a - x[0])**2 + b * (x[1] - x[0]**2)**2 }
 
-    problem.to_update {|new_alpha, new_beta|
-      smooth_alpha = smooth*new_alpha + (1 - smooth)*problem.param_alpha
-      smooth_beta = smooth*new_beta + (1 - smooth)*problem.param_beta
+    problem.to_update do |new_alpha, new_beta|
+      smooth_alpha = smooth * new_alpha + (1 - smooth) * problem.param_alpha
+      smooth_beta = smooth * new_beta + (1 - smooth) * problem.param_beta
       [smooth_alpha, smooth_beta]
-    }
+    end
 
     problem.solve
 

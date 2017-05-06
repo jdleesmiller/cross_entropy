@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module CrossEntropy
   VERSION_MAJOR = 1
   VERSION_MINOR = 0

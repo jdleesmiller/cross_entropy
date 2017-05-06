@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'cross_entropy'
 require 'minitest/autorun'
 
@@ -7,9 +8,9 @@ class TestContinuousProblem < MiniTest::Test
 
   include NMath
 
-  def assert_narray_close exp, obs
+  def assert_narray_close(exp, obs)
     assert exp.shape == obs.shape && ((exp - obs).abs < DELTA).all?,
-      "#{exp.inspect} expected; got\n#{obs.inspect}"
+           "#{exp.inspect} expected; got\n#{obs.inspect}"
   end
 
   #
@@ -33,7 +34,7 @@ class TestContinuousProblem < MiniTest::Test
     problem.max_iters   = 100
 
     # NB: maximising
-    problem.to_score_sample {|x| -(exp(-(x-2)**2) + 0.8 * exp(-(x+2)**2)) }
+    problem.to_score_sample { |x| -(exp(-(x - 2)**2) + 0.8 * exp(-(x + 2)**2)) }
 
     problem.solve
 
@@ -61,13 +62,13 @@ class TestContinuousProblem < MiniTest::Test
     problem.num_elite   = 10
     problem.max_iters   = 300
 
-    problem.to_score_sample {|x| (a - x[0])**2 + b*(x[1] - x[0]**2)**2 }
+    problem.to_score_sample { |x| (a - x[0])**2 + b * (x[1] - x[0]**2)**2 }
 
-    problem.to_update {|new_mean, new_stddev|
-      smooth_mean = smooth*new_mean + (1 - smooth)*problem.param_mean
-      smooth_stddev = smooth*new_stddev + (1 - smooth)*problem.param_stddev
+    problem.to_update do |new_mean, new_stddev|
+      smooth_mean = smooth * new_mean + (1 - smooth) * problem.param_mean
+      smooth_stddev = smooth * new_stddev + (1 - smooth) * problem.param_stddev
       [smooth_mean, smooth_stddev]
-    }
+    end
 
     problem.solve
 
@@ -75,4 +76,3 @@ class TestContinuousProblem < MiniTest::Test
     assert problem.num_iters <= problem.max_iters
   end
 end
-

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module CrossEntropy
   #
   # Assuming that the data are probabilities in an NArray (say dim 1 or dim 2
@@ -13,13 +14,18 @@ module CrossEntropy
       super(params)
 
       # Configurable procs.
-      @generate_samples = proc { self.generate_samples_directly }
-      @estimate         = proc {|elite|  self.estimate_ml(elite) }
-      @update           = proc {|pr_est| pr_est }
+      @generate_samples = proc { generate_samples_directly }
+      @estimate         = proc { |elite| estimate_ml(elite) }
+      @update           = proc { |pr_est| pr_est }
     end
 
-    def num_variables; @params.shape[1] end
-    def num_values;    @params.shape[0] end
+    def num_variables
+      @params.shape[1]
+    end
+
+    def num_values
+      @params.shape[0]
+    end
 
     #
     # Generate samples directly from the probabilities matrix {#params}.
@@ -29,7 +35,7 @@ module CrossEntropy
     # {#to_generate_samples}.
     #
     def generate_samples_directly
-      self.params.tile(1,1,self.num_samples).sample_pmf_dim.transpose(1,0)
+      params.tile(1, 1, num_samples).sample_pmf_dim.transpose(1, 0)
     end
 
     #
@@ -45,12 +51,12 @@ module CrossEntropy
     # @return [NArray] {#num_variables} rows; {#num_values} columns; entries are
     # non-negative floats in [0,1] and sum to 1
     #
-    def estimate_ml elite
-      pr_est = NArray.float(self.num_values, self.num_variables)
+    def estimate_ml(elite)
+      pr_est = NArray.float(num_values, num_variables)
       for i in 0...num_variables
-        elite_i = elite[true,i]
+        elite_i = elite[true, i]
         for j in 0...num_values
-          pr_est[j,i] = elite_i.eq(j).count_true
+          pr_est[j, i] = elite_i.eq(j).count_true
         end
       end
       pr_est /= elite.shape[0]
@@ -67,14 +73,13 @@ module CrossEntropy
     # @return [Narray] column vector with {#num_variables} integer entries in
     # [0, {#num_values})
     #
-    def most_likely_solution pr=self.params
-      pr_eq = pr.eq(pr.max(0).tile(1,pr.shape[0]).transpose(1,0))
+    def most_likely_solution(pr = params)
+      pr_eq = pr.eq(pr.max(0).tile(1, pr.shape[0]).transpose(1, 0))
       pr_ml = NArray.int(pr_eq.shape[1])
       for i in 0...pr_eq.shape[1]
-        pr_ml[i] = pr_eq[true,i].where[0]
+        pr_ml[i] = pr_eq[true, i].where[0]
       end
       pr_ml
     end
   end
 end
-
