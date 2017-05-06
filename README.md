@@ -82,11 +82,16 @@ problem.solve
 - Added recent rubies in CI
 - Improved README
 
+### 1.0.0 - 2 Jan 2016
+
+- Initial release after extraction from https://github.com/jdleesmiller/si_taxi
+- Added Gaussian and Beta problems
+
 ## LICENSE
 
 (The MIT License)
 
-Copyright (c) 2017 John Lees-Miller
+Copyright (c) 2014-2017 John Lees-Miller
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
