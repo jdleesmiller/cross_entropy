@@ -16,7 +16,7 @@ class TestContinuousProblem < MiniTest::Test
   #
   # Example 3.1 from Kroese et al. 2006.
   #
-  # Maximise $e^{-(x-2)^2} + 0.8 e^{−(x+2)^2}$ for real $x$. The function has a
+  # Maximise $e^{-(x-2)^2} + 0.8 e^{-(x+2)^2}$ for real $x$. The function has a
   # global maximum at x = 2 and a local maximum at x = -2, which we should
   # avoid.
   #
