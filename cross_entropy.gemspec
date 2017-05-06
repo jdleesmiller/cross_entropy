@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
     ' optimisation problems.'
 
   s.add_runtime_dependency 'narray', '~> 0.6'
-  s.add_development_dependency 'gemma', '~> 4.1'
+  s.add_development_dependency 'gemma', '~> 5.0'
 
   s.files       = Dir.glob('{lib,bin}/**/*.rb') + %w(README.md)
   s.test_files  = Dir.glob('test/cross_entropy/*_test.rb')
