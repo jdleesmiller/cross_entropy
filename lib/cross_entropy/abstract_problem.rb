@@ -77,7 +77,7 @@ module CrossEntropy
 
         # Score each sample.
         scores = NArray.float(num_samples)
-        for i in 0...num_samples
+        (0...num_samples).each do |i|
           sample_i = samples[i, true]
           score_i  = @score_sample.call(sample_i)
 

@@ -117,8 +117,8 @@ class TestCrossEntropy < MiniTest::Test
 
     max_cut_score = proc do |sample|
       weight = 0
-      for i in 0...n
-        for j in 0...n
+      (0...n).each do |i|
+        (0...n).each do |j|
           weight += c[j, i] if sample[i] < sample[j]
         end
       end

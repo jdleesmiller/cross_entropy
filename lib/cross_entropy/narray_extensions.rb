@@ -200,7 +200,8 @@ module CrossEntropy
           r_thresh    = r[*slice]
           res[*slice] = shape[dim] - 1 # default to last
           self_slice = slice.dup
-          for self_slice[dim] in 0...shape[dim]
+          (0...shape[dim]).each do |i|
+            self_slice[dim] = i
             if r_thresh < self[*self_slice]
               res[*slice] = self_slice[dim]
               break

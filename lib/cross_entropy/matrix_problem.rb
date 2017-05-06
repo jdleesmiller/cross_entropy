@@ -53,9 +53,9 @@ module CrossEntropy
     #
     def estimate_ml(elite)
       pr_est = NArray.float(num_values, num_variables)
-      for i in 0...num_variables
+      (0...num_variables).each do |i|
         elite_i = elite[true, i]
-        for j in 0...num_values
+        (0...num_values).each do |j|
           pr_est[j, i] = elite_i.eq(j).count_true
         end
       end
@@ -76,7 +76,7 @@ module CrossEntropy
     def most_likely_solution(pr = params)
       pr_eq = pr.eq(pr.max(0).tile(1, pr.shape[0]).transpose(1, 0))
       pr_ml = NArray.int(pr_eq.shape[1])
-      for i in 0...pr_eq.shape[1]
+      (0...pr_eq.shape[1]).each do |i|
         pr_ml[i] = pr_eq[true, i].where[0]
       end
       pr_ml
