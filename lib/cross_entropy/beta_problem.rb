@@ -12,8 +12,8 @@ module CrossEntropy
     def initialize(alpha, beta)
       super [alpha, beta]
 
-      @generate_samples = proc { generate_beta_samples }
-      @estimate         = proc { |elite| estimate_mom(elite) }
+      to_generate_samples { generate_beta_samples }
+      to_estimate { |elite| estimate_mom(elite) }
 
       yield(self) if block_given?
     end

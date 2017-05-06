@@ -13,10 +13,10 @@ module CrossEntropy
     def initialize(params = nil)
       super(params)
 
-      # Configurable procs.
-      @generate_samples = proc { generate_samples_directly }
-      @estimate         = proc { |elite| estimate_ml(elite) }
-      @update           = proc { |pr_est| pr_est }
+      to_generate_samples { generate_samples_directly }
+      to_estimate { |elite| estimate_ml(elite) }
+
+      yield(self) if block_given?
     end
 
     def num_variables

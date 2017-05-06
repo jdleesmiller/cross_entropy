@@ -8,8 +8,8 @@ module CrossEntropy
     def initialize(mean, stddev)
       super [mean, stddev]
 
-      @generate_samples = proc { generate_gaussian_samples }
-      @estimate         = proc { |elite| estimate_ml(elite) }
+      to_generate_samples { generate_gaussian_samples }
+      to_estimate { |elite| estimate_ml(elite) }
 
       yield(self) if block_given?
     end
