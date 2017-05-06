@@ -69,7 +69,7 @@ module CrossEntropy
     def solve
       @num_iters = 0
 
-      begin
+      loop do
         @min_score   = nil
         @elite_score = nil
 
@@ -106,7 +106,8 @@ module CrossEntropy
         self.params = @update.call(estimated_params)
 
         @num_iters += 1
-      end until @stop_decision.call
+        break if @stop_decision.call
+      end
     end
   end
 end
