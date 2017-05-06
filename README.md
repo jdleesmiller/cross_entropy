@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/jdleesmiller/cross_entropy.svg?branch=master)](https://travis-ci.org/jdleesmiller/cross_entropy)
 [![Gem Version](https://badge.fury.io/rb/cross_entropy.svg)](https://badge.fury.io/rb/cross_entropy)
 
-https://github.com/jdleesmiller/cross_entropy 
+https://github.com/jdleesmiller/cross_entropy
 
 ## SYNOPSIS
 
@@ -11,12 +11,12 @@ Implementations of the [Cross Entropy Method](https://en.wikipedia.org/wiki/Cros
 
 ### What is the Cross Entropy method?
 
-It's basically like a [genetic algorithm](https://en.wikipedia.org/wiki/Genetic_algorithm) without the biological stuff. Instead, it works on nice, pure probability distributions. You start by specifying a probability distribution for the optimal values, based on your initial guess. The CEM then
+It's basically like a [genetic algorithm](https://en.wikipedia.org/wiki/Genetic_algorithm) without the biological analogy. Instead, it uses probability distributions. You start by specifying a probability distribution for the optimal values, based on your initial guess. The CEM then
 - generates samples based on that distribution,
 - scores them according to the objective function, and
-- uses the highest-scoring samples to update the parameters of the probability distribution, so it converges on an optimal value.
+- uses the lowest-scoring samples (that is, this library assumes that we want to minimize the objective function) to update the parameters of the probability distribution, so it converges on an optimal value.
 
-It has relatively few tunable parameters, and it automatically balances diversification and intensification. It is robust to noise in the objective function, so it is very useful for parameter tuning and simulation work.
+It has relatively few tuneable parameters, and it automatically balances diversification and intensification. It is robust to noise in the objective function, so it is very useful for parameter tuning and simulation work.
 
 ### Supported problem types
 
@@ -73,11 +73,20 @@ problem.solve
 
     gem install cross_entropy
 
+## HISTORY
+
+### 1.1.0 - 6 May 2017
+
+- Linted with rubocop
+- Improved test coverage
+- Added recent rubies in CI
+- Improved README
+
 ## LICENSE
 
 (The MIT License)
 
-Copyright (c) 2015 John Lees-Miller
+Copyright (c) 2017 John Lees-Miller
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -97,4 +106,3 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
